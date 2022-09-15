@@ -25,29 +25,19 @@ const formSlice = createSlice({
   initialState,
   reducers: {
     reset(state) {
-      state.first_name = "";
-      state.last_name = "";
-      state.email = "";
-      state.age = "";
-      state.gender = "";
-      state.phone_number = "";
+      state = initialState;
     },
-    setFirst(state, {payload}) {
-      state.first_name = payload.first_name;
-      state.last_name = payload.last_name;
-      state.email = payload.email;
-    },
-    setSecond(state, {payload}) {
-      state.age = payload.age || state.age;
-      state.gender = payload.gender || state.gender;
+    setForm(state, {payload}) {
+      state.first_name  = payload.first_name || state.first_name;
+      state.last_name   = payload.last_name  || state.last_name;
+      state.email       = payload.email      || state.email;
+      state.age         = payload.age        || state.age;
+      state.gender      = payload.gender     || state.gender;
       state.phone_number = payload.phone_number || state.phone_number;
-    },
-    setSuccess(state, {payload}) {
-      state.success = payload;
-      console.log(state.success);
+      state.success     = payload.success    || state.success;
     }
   },
 });
 
-export const { reset, setFirst, setSecond, setSuccess } = formSlice.actions;
+export const { reset, setForm } = formSlice.actions;
 export default formSlice.reducer;

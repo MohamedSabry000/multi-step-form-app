@@ -1,7 +1,7 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
-import { setFirst, setSecond, setSuccess } from '../redux/form-slice'
+import { setForm } from '../redux/form-slice'
 
 type IElement = {
   name: string,
@@ -38,6 +38,7 @@ function FormSlice() {
     phone_number: formData.phone_number,
   })
   const [err, setErr] = React.useState(false)
+  const [tempData, setTempData] = React.useState({})
   const navigate = useNavigate()
   const { id } = useParams()
 
@@ -47,13 +48,11 @@ function FormSlice() {
 
   React.useEffect(() => {
     if(Number(id)===2 && data.phone_number.length > 0) {
-      dispatch(setSecond(data))
-      dispatch(setSuccess(true))
-    } else if(Number(id)===2 && data.phone_number.length === 0) {
-      dispatch(setSuccess(false))
+      dispatch(setForm({...data, success: true}))
+    } else {
+      dispatch(setForm({success: false}))
     }
-    console.log(formData);
-  }, [data, setData])
+  }, [id, data, dispatch])
 
   const handleError = (elem: any) => {
     let error = false;
@@ -70,16 +69,37 @@ function FormSlice() {
   const next = () => {
     console.log(data)
     setErr(false);
-    if(id === "1" && !handleError(first)) {
-      dispatch(setFirst(data))
+    data && dispatch(setForm(data));
+
+    (id === "1" && !handleError(first))?
       navigate(`/step/2`)
-    } else if (id === "2" && !handleError(second)) {
-      dispatch(setSecond(data))
+    : (id === "2" && !handleError(second)) ?
       navigate(`/print`)
-    } else {
-      setErr(true)
-    }
+    : setErr(true)
   }
+
+  const renderTextInputElement = (element: IElement, val:string) =>
+    <input
+    type={element.type}
+    name={element.name}
+    required={element.required}
+    value={val}
+    onChange={e => setData({...data, [element.name]: e.target.value})}
+  />
+  const renderSelectElement = (element: IElement, val:string) =>
+    <select
+      name={element.name}
+      required={element.required}
+      defaultValue={val}
+      onChange={e => setData({...data, [element.name]: e.target.value})}
+    >
+      <option value="">Select</option>
+      {
+        Object.entries(element.options).map(([key, value]: any) => {
+          return <option key={key} value={key}>{value}</option>
+        })
+      }
+    </select>
 
   const render = (elements: IElement[]) => {
     return elements.map((element: IElement, index) => {
@@ -88,31 +108,7 @@ function FormSlice() {
       return (
         <div className="form-control" key={index}>
           <label>{element.label}: <span className="required">{element.required ? "*" : ""}</span></label>
-          {
-            element.type === "text" || element.type === "email" || element.type === "number" ?
-              <input
-                type={element.type}
-                name={element.name}
-                required={element.required}
-                value={val}
-                onChange={e => setData({...data, [element.name]: e.target.value})}
-              />
-            : element.type === "select" ?
-              <select
-                name={element.name}
-                required={element.required}
-                defaultValue={val}
-                onChange={e => setData({...data, [element.name]: e.target.value})}
-              >
-                <option value="">Select</option>
-                {
-                  Object.entries(element.options).map(([key, value]: any) => {
-                    return <option key={key} value={key}>{value}</option>
-                  })
-                }
-              </select>
-            : null
-          }
+          { element.type === "select" ? renderSelectElement(element, val) : renderTextInputElement(element, val)}
         </div>
       )}
     )
