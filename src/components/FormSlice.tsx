@@ -2,6 +2,7 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { setForm } from '../redux/form-slice'
+import { first, second } from './data';
 
 type IElement = {
   name: string,
@@ -11,34 +12,13 @@ type IElement = {
   options?: any
 }
 
-const first = [
-  {name: "first_name", label: "First Name", type: "text",required: true},
-  {name: "last_name", label: "Last Name", type: "text",required: true},
-  {name: "email", label: "Email", type: "email",required: true}
-]
-const second = [
-  {name: "age", label: "Age", type: "number", required: false},
-  {name: "gender", label: "Gender", type: "select", required: false, options: {
-    male: "Male",
-    female: "Female"
-  }},
-  {name: "phone_number", label: "Phone Number", type: "number", required: true},
-]
-
 
 function FormSlice() {
   const formData = useSelector((state: any) => state);
-  const dispatch = useDispatch()
-  const [data, setData] = React.useState( {
-    first_name: formData.first_name,
-    last_name: formData.last_name,
-    email: formData.email,
-    age: formData.age,
-    gender: formData.gender,
-    phone_number: formData.phone_number,
-  })
+  const [data, setData]: [any, any]= React.useState( { ...formData } );
   const [err, setErr] = React.useState(false)
-  const [tempData, setTempData] = React.useState({})
+
+  const dispatch = useDispatch()
   const navigate = useNavigate()
   const { id } = useParams()
 
@@ -78,20 +58,25 @@ function FormSlice() {
     : setErr(true)
   }
 
+  const handleInputChange = (e: any) => {
+    const { name, value } = e.target;
+    setData({...data, [name]: value})
+  }
+
   const renderTextInputElement = (element: IElement, val:string) =>
     <input
     type={element.type}
     name={element.name}
     required={element.required}
     value={val}
-    onChange={e => setData({...data, [element.name]: e.target.value})}
+    onChange={handleInputChange}
   />
   const renderSelectElement = (element: IElement, val:string) =>
     <select
       name={element.name}
       required={element.required}
       defaultValue={val}
-      onChange={e => setData({...data, [element.name]: e.target.value})}
+      onChange={handleInputChange}
     >
       <option value="">Select</option>
       {
@@ -104,7 +89,7 @@ function FormSlice() {
   const render = (elements: IElement[]) => {
     return elements.map((element: IElement, index) => {
       let entry =Object.entries(data).find(([key, value]) => key === element.name)
-      const val  = entry ? entry[1] : ""
+      const val: string  = `${entry ? entry[1] : ""}`
       return (
         <div className="form-control" key={index}>
           <label>{element.label}: <span className="required">{element.required ? "*" : ""}</span></label>
