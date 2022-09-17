@@ -87,17 +87,34 @@ function FormSlice() {
     </select>
 
   const render = (elements: IElement[]) => {
-    return elements.map((element: IElement, index) => {
-      let entry =Object.entries(data).find(([key, value]) => key === element.name)
-      const val: string  = `${entry ? entry[1] : ""}`
-      return (
-        <div className="form-control" key={index}>
-          <label>{element.label}: <span className="required">{element.required ? "*" : ""}</span></label>
-          { element.type === "select" ? renderSelectElement(element, val) : renderTextInputElement(element, val)}
-        </div>
-      )}
+    const selectElements  = elements.filter(e => e.type === "select")
+    const textElements = elements.filter(e => e.type !== "select")
+    return (
+      <>
+        {selectElements.map((element: IElement) => {
+          let entry = Object.entries(data).find(([key, value]) => key === element.name)
+          const val:string  = `${entry ? entry[1] : ""}`
+          return (
+            <div key={element.name}>
+              <label>{element.label}</label>
+              {renderSelectElement(element, val)}
+            </div>
+          )
+        })}
+        {textElements.map((element: IElement) => {
+          let entry = Object.entries(data).find(([key, value]) => key === element.name)
+          const val:string  = `${entry ? entry[1] : ""}`
+          return (
+            <div key={element.name}>
+              <label>{element.label}</label>
+              {renderTextInputElement(element, val)}
+            </div>
+          )
+        })}
+      </>
     )
   }
+
 
   return (
     <div id="slices">
