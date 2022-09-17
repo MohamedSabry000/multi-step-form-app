@@ -95,8 +95,8 @@ function FormSlice() {
           let entry = Object.entries(data).find(([key, value]) => key === element.name)
           const val:string  = `${entry ? entry[1] : ""}`
           return (
-            <div key={element.name}>
-              <label>{element.label}</label>
+            <div className="form-control" key={element.name}>
+              <label>{element.label}: <span className="required">{element.required ? "*" : ""}</span></label>
               {renderSelectElement(element, val)}
             </div>
           )
@@ -105,8 +105,8 @@ function FormSlice() {
           let entry = Object.entries(data).find(([key, value]) => key === element.name)
           const val:string  = `${entry ? entry[1] : ""}`
           return (
-            <div key={element.name}>
-              <label>{element.label}</label>
+            <div className="form-control" key={element.name}>
+              <label>{element.label}: <span className="required">{element.required ? "*" : ""}</span></label>
               {renderTextInputElement(element, val)}
             </div>
           )
@@ -114,7 +114,6 @@ function FormSlice() {
       </>
     )
   }
-
 
   return (
     <div id="slices">
