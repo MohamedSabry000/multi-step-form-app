@@ -131,7 +131,7 @@ function FormSlice() {
           <button disabled={Number(id) === 1} onClick={() => navigate('/step/1')}>
             Prev
           </button>
-          <button onClick={next} disabled={Number(id) === 2 && !formData.success}>
+          <button onClick={next} disabled={Number(id) === 2 && data.phone_number.length === 0}>
             { Number(id) === 1? "Next" : "Submit"}
           </button>
         </div>

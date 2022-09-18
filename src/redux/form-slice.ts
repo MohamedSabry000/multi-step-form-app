@@ -28,13 +28,10 @@ const formSlice = createSlice({
       state = initialState;
     },
     setForm(state, {payload}) {
-      state.first_name  = payload.first_name || state.first_name;
-      state.last_name   = payload.last_name  || state.last_name;
-      state.email       = payload.email      || state.email;
-      state.age         = payload.age        || state.age;
-      state.gender      = payload.gender     || state.gender;
-      state.phone_number = payload.phone_number || state.phone_number;
-      state.success     = payload.success    || state.success;
+      console.log(payload);
+      Array.from(Object.keys(payload)).forEach((key) => {
+        state = {...state, [key]: payload[key]}
+      })
     }
   },
 });
