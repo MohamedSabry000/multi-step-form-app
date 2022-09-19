@@ -4,6 +4,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Particles from "react-tsparticles";
 import { Home, FormSlice } from './components';
 import PrettyPrint from './components/PrettyPrint';
+import { Navigate } from 'react-router-dom'
+
 
 const ParticlesOptions: any = {
   background: {
@@ -56,6 +58,7 @@ const ParticlesOptions: any = {
 
 function App() {
   const formData = useSelector((state: any) => state);
+
   const particlesLoaded = React.useCallback(async (container: any) => {
       await console.log(container);
   }, []);
@@ -69,7 +72,7 @@ function App() {
       />
       <Router>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Navigate to='/step/1' replace={true} />} />
           <Route path="/step/:id" element={<FormSlice />} />
           {formData.success && <Route path="/print" element={<PrettyPrint />} />}
         </Routes>
